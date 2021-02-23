@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Remote Screen</title>
+    <link rel="stylesheet" href="assets/css/reset.css"/>
+    <link rel="stylesheet" href="assets/css/app.css"/>
+</head>
+<body>
+<h1>Remote Screen</h1>
+<audio id="meeting-audio"></audio>
+
+<button type="button" id="createMeeting">Start</button>
+<button type="button" id="deleteMeeting" disabled>Delete</button>
+<label>Meeting ID</label><input id="meetingIdTextBox" type="text">
+<div id="video-list">
+
+</div>
+
+<script src="assets/js/amazon-chime-sdk.min.js"></script>
+<script src="./renderer.js"></script>
+</body>
+</html>
+
+
