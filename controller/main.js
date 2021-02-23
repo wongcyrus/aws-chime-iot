@@ -3,7 +3,7 @@ const {app, BrowserWindow, screen} = require('electron')
 const path = require('path')
 
 const AWS = require("@aws-sdk/client-chime");
-const client = new AWS.Chime({region: "REGION"});
+const chime = new AWS.Chime({region: "us-east-1"});
 
 function createWindow() {
     // Create the browser window.
@@ -50,7 +50,7 @@ const {ipcMain} = require('electron');
 let meetingId;
 ipcMain.handle('createMeeting', async (event, mediaRegion) => {
     try {
-        const meeting = await client.createMeetingWithAttendees({
+        const meeting = await chime.createMeetingWithAttendees({
             MeetingHostId: "RemoteCamera",
             MediaRegion: mediaRegion,
             Attendees: [{ExternalUserId: "Controller"}]
@@ -68,7 +68,7 @@ function deleteMeeting() {
     try {
         console.log("Delete: " + meetingId);
         if(meetingId) {
-            const result = client.deleteMeeting({MeetingId: meetingId});
+            const result = chime.deleteMeeting({MeetingId: meetingId});
             meetingId = undefined;
             return result;
         }

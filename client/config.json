@@ -1,0 +1,8 @@
+{
+  "keyPath": "certs/private.pem.key",
+  "certPath": "certs/device.pem.crt",
+  "caPath": "AmazonRootCA1.pem",
+  "clientId": "RemoteCameraDevice",
+  "host": "a1qlex7vqi1791-ats.iot.ap-east-1.amazonaws.com",
+  "thingName": "awsiotdeepracer-AWSDeepRacerThing-18J2XC8FB2RBP"
+}

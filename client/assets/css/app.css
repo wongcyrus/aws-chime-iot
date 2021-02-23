@@ -1,0 +1,15 @@
+#video-list video {
+    width: 600px;
+    height: 400px;
+}
+#meeting-audio {
+    display: none;
+}
+
+.fullScreen {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+}

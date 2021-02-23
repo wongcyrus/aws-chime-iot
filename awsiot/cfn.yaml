@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  certificateArn:
+    Type: String
+    
+Resources:
+  AWSClientThing:
+    Type: AWS::IoT::Thing
+
+  AWSClientThingPrincipalAttachment:
+    Type: AWS::IoT::ThingPrincipalAttachment
+    Properties:
+      ThingName: !Ref AWSClientThing
+      Principal: !Ref certificateArn
+
+  AWSClientPolicyPrincipalAttachment:
+    Type: AWS::IoT::PolicyPrincipalAttachment
+    Properties:
+      PolicyName: !Ref AWSClientPolicy
+      Principal: !Ref certificateArn
+
+  AWSClientPolicy:  
+    Type: AWS::IoT::Policy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - iot:Connect
+          - iot:Publish
+          - iot:Receive
+          - iot:Subscribe
+          Resource:
+          - "*"
+Outputs:
+  AWSClientThing:
+    Value: !Ref AWSClientThing

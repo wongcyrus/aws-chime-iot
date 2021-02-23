@@ -1,7 +1,7 @@
 {
-  "name": "aws-chime-iot-controller",
+  "name": "aws-chime-iot-client",
   "version": "1.0.0",
-  "description": "AWS IoT and Amazon Chime Controller",
+  "description": "AWS IoT and Amazon Chime Client",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
@@ -17,6 +17,7 @@
     "electron": "^11.3.0"
   },
   "dependencies": {
-    "@aws-sdk/client-chime": "^3.6.0"
+    "@aws-sdk/client-chime": "^3.6.0",
+    "aws-iot-device-sdk": "^2.2.6"
   }
 }
