@@ -17,6 +17,7 @@
     "electron": "^11.3.0"
   },
   "dependencies": {
-    "@aws-sdk/client-chime": "^3.6.0"
+    "@aws-sdk/client-chime": "^3.6.0",
+    "@aws-sdk/client-iot-data-plane": "^3.6.1"
   }
 }

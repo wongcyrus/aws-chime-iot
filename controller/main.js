@@ -4,6 +4,9 @@ const path = require('path')
 
 const AWS = require("@aws-sdk/client-chime");
 const chime = new AWS.Chime({region: "us-east-1"});
+const config = require('./config.json');
+const {IoTDataPlaneClient, UpdateThingShadowCommand} = require("@aws-sdk/client-iot-data-plane");
+const awsIot = new IoTDataPlaneClient({region: config.awsIotRegion});
 
 function createWindow() {
     // Create the browser window.
@@ -48,15 +51,28 @@ app.on('window-all-closed', function () {
 // code. You can also put them in separate files and require them here.
 const {ipcMain} = require('electron');
 let meetingId;
-ipcMain.handle('createMeeting', async (event, mediaRegion) => {
+ipcMain.handle('createMeeting', async () => {
     try {
         const meeting = await chime.createMeetingWithAttendees({
             MeetingHostId: "RemoteCamera",
-            MediaRegion: mediaRegion,
+            MediaRegion: config.amazonChimeMediaRegion,
             Attendees: [{ExternalUserId: "Controller"}]
         });
         meetingId = meeting.Meeting.MeetingId;
+        try {
+            const params = {
+                thingName: config.thingName,
+                payload: JSON.stringify({"state": {"desired": {"meetingId": meetingId}}})
+            };
+            const command = new UpdateThingShadowCommand(params);
+            await awsIot.send(command);
+            // process data.
+        } catch (error) {
+            // error handling.
+            console.error(error);
+        }
         return meeting;
+
         // process data.
     } catch (error) {
         // error handling.
@@ -67,7 +83,7 @@ ipcMain.handle('createMeeting', async (event, mediaRegion) => {
 function deleteMeeting() {
     try {
         console.log("Delete: " + meetingId);
-        if(meetingId) {
+        if (meetingId) {
             const result = chime.deleteMeeting({MeetingId: meetingId});
             meetingId = undefined;
             return result;

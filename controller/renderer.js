@@ -44,7 +44,7 @@ function updateTiles(meetingSession) {
 async function start() {
     createMeeting.disabled = true;
     deleteMeeting.disabled = false;
-    ipcRenderer.invoke('createMeeting', "ap-southeast-1").then(async (data) => {
+    ipcRenderer.invoke('createMeeting').then(async (data) => {
         console.log(data);
         try {
             meetingId = data.Meeting.MeetingId;

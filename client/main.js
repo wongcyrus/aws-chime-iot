@@ -46,8 +46,8 @@ async function joinMeeting() {
                 ExternalUserId: config.thingName,
             });
         mainWindow.webContents.send('startMeeting', {
-            Meeting: meeting,
-            Attendee: attendee
+            Meeting: meeting.Meeting,
+            Attendee:attendee.Attendee
         });
         // process data.
     } catch (error) {
