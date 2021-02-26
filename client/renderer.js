@@ -11,6 +11,7 @@ const chimeLogger = new ChimeSDK.ConsoleLogger(
 );
 const deviceController = new ChimeSDK.DefaultDeviceController(chimeLogger);
 const {ipcRenderer} = require('electron');
+// const BrowserWindow = require('electron').remote.BrowserWindow;
 
 
 ipcRenderer.on('startMeeting', async (event, message) => {
@@ -55,6 +56,28 @@ const observer = {
         }
         updateTiles(meetingSession);
     },
+    eventDidReceive(name, attributes) {
+        // Handle a meeting event.
+        const {meetingHistory, ...otherAttributes} = attributes;
+        const recentMeetingHistory = meetingHistory.filter(({timestampMs}) => {
+            return Date.now() - timestampMs < 5 * 60 * 1000;
+        });
+        switch (name) {
+            case 'audioInputFailed':
+            case 'videoInputFailed':
+            case 'meetingStartFailed':
+            case 'meetingFailed':
+                console.error(`Failure: ${name} with attributes: `, {
+                    ...otherAttributes,
+                    recentMeetingHistory
+                });
+                break;
+            case 'meetingEnded':
+                console.log(attributes);
+                window.location.reload();
+                break;
+        }
+    }
 };
 
 async function start(data) {
@@ -85,11 +108,15 @@ async function start(data) {
         const audioInputs = await meetingSession.audioVideo.listAudioInputDevices();
         const videoInputs = await meetingSession.audioVideo.listVideoInputDevices();
 
+        console.log(videoInputs);
+        let camera = videoInputs.filter(c => !c.label.includes("Condor"))[0];
+        console.log(camera);
         await meetingSession.audioVideo.chooseAudioInputDevice(
             audioInputs[0].deviceId
         );
+
         await meetingSession.audioVideo.chooseVideoInputDevice(
-            videoInputs[0].deviceId
+            camera.deviceId
         );
 
         meetingSession.audioVideo.addObserver(observer);

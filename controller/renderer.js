@@ -40,7 +40,40 @@ function updateTiles(meetingSession) {
         }
     })
 }
-
+const observer = {
+    // videoTileDidUpdate is called whenever a new tile is created or tileState changes.
+    videoTileDidUpdate: (tileState) => {
+        console.log("VIDEO TILE DID UPDATE");
+        console.log(tileState);
+        // Ignore a tile without attendee ID and other attendee's tile.
+        if (!tileState.boundAttendeeId) {
+            return;
+        }
+        updateTiles(meetingSession);
+    },
+    eventDidReceive(name, attributes) {
+        // Handle a meeting event.
+        const {meetingHistory, ...otherAttributes} = attributes;
+        const recentMeetingHistory = meetingHistory.filter(({timestampMs}) => {
+            return Date.now() - timestampMs < 5 * 60 * 1000;
+        });
+        switch (name) {
+            case 'audioInputFailed':
+            case 'videoInputFailed':
+            case 'meetingStartFailed':
+            case 'meetingFailed':
+                console.error(`Failure: ${name} with attributes: `, {
+                    ...otherAttributes,
+                    recentMeetingHistory
+                });
+                break;
+            case 'meetingEnded':
+                console.log(attributes);
+                window.location.reload();
+                break;
+        }
+    }
+};
 async function start() {
     createMeeting.disabled = true;
     deleteMeeting.disabled = false;
@@ -69,18 +102,7 @@ async function start() {
             //     videoInputs[0].deviceId
             // );
 
-            const observer = {
-                // videoTileDidUpdate is called whenever a new tile is created or tileState changes.
-                videoTileDidUpdate: (tileState) => {
-                    console.log("VIDEO TILE DID UPDATE");
-                    console.log(tileState);
-                    // Ignore a tile without attendee ID and other attendee's tile.
-                    if (!tileState.boundAttendeeId) {
-                        return;
-                    }
-                    updateTiles(meetingSession);
-                },
-            };
+
 
             meetingSession.audioVideo.addObserver(observer);
 
