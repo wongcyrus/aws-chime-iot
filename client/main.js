@@ -1,14 +1,11 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow, screen} = require('electron')
 const path = require('path')
-
-const AWS = require("@aws-sdk/client-chime");
-const client = new AWS.Chime({region: "us-east-1"});
 const awsIot = require('aws-iot-device-sdk');
 const config = require('./config.json');
-const {ipcMain} = require('electron');
 
-let meetingId;
+
+let meeting;
 let mainWindow;
 
 function createWindow() {
@@ -32,22 +29,11 @@ function createWindow() {
 
 async function joinMeeting() {
     try {
-        const meeting = await client
-            .getMeeting({
-                MeetingId: meetingId,
-            });
-
-        const attendee = await client
-            .createAttendee({
-                //ID of the meeting
-                MeetingId: meeting.Meeting.MeetingId,
-
-                //User ID that we want to associate to
-                ExternalUserId: config.thingName,
-            });
+        console.log("Meeting");
+        console.log(meeting);
         mainWindow.webContents.send('startMeeting', {
             Meeting: meeting.Meeting,
-            Attendee:attendee.Attendee
+            Attendee:meeting.Attendee
         });
         // process data.
     } catch (error) {
@@ -84,8 +70,8 @@ function ConnectAwsIoT() {
         async (thingName, stateObject) => {
             console.log('received delta on ' + thingName + ': ' +
                 JSON.stringify(stateObject));
-            if (stateObject.state.meetingId !== "") {
-                meetingId = stateObject.state.meetingId;
+            if (stateObject.state.meeting !== "") {
+                meeting = stateObject.state.meeting;
                 await joinMeeting();
             }
         });

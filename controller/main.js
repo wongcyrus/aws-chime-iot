@@ -59,10 +59,11 @@ ipcMain.handle('createMeeting', async () => {
             Attendees: [{ExternalUserId: "Controller"}]
         });
         meetingId = meeting.Meeting.MeetingId;
+        const remoteAttendee = await joinMeeting(meetingId);
         try {
             const params = {
                 thingName: config.thingName,
-                payload: JSON.stringify({"state": {"desired": {"meetingId": meetingId}}})
+                payload: JSON.stringify({"state": {"desired": {"meeting": remoteAttendee}}})
             };
             const command = new UpdateThingShadowCommand(params);
             await awsIot.send(command);
@@ -93,6 +94,32 @@ function deleteMeeting() {
     } catch (error) {
         // error handling.
         return error;
+    }
+}
+
+async function joinMeeting(meetingId) {
+    try {
+        const meeting = await chime
+            .getMeeting({
+                MeetingId: meetingId,
+            });
+
+        const attendee = await chime
+            .createAttendee({
+                //ID of the meeting
+                MeetingId: meeting.Meeting.MeetingId,
+
+                //User ID that we want to associate to
+                ExternalUserId: "Remote Thing",
+            });
+        return {
+            Meeting: meeting.Meeting,
+            Attendee: attendee.Attendee
+        }
+        // process data.
+    } catch (error) {
+        // error handling.
+        console.error(error);
     }
 }
 
