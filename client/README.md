@@ -43,3 +43,6 @@ Note: If you're using Linux Bash for Windows, [see this guide](https://www.howto
 ## License
 
 [CC0 1.0 (Public Domain)](LICENSE.md)
+
+
+aws s3 sync s3://awsiotchimestack-keybucketdb247822-1tjvhrbj394p4 certs/ 

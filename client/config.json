@@ -4,5 +4,5 @@
   "caPath": "AmazonRootCA1.pem",
   "clientId": "RemoteCameraDevice",
   "host": "a1qlex7vqi1791-ats.iot.ap-east-1.amazonaws.com",
-  "thingName": "awsiotdeepracer-AWSDeepRacerThing-18J2XC8FB2RBP"
+  "thingName": "AwsIotChimeStack-ClientThing-1AN3BAS7A941Z"
 }
