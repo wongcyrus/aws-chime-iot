@@ -1,4 +1,3 @@
-
 sudo apt-get --assume-yes install jq
 npm install -g aws-cdk --force
 npm install -g typescript
