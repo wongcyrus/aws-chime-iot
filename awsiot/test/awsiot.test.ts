@@ -5,7 +5,7 @@ import * as Awsiot from '../lib/awsiotchime-stack';
 test('Empty Stack', () => {
     const app = new cdk.App();
     // WHEN
-    const stack = new Awsiot.AwsiotStack(app, 'MyTestStack');
+    const stack = new Awsiot.AwsIotChimeStack(app, 'MyTestStack');
     // THEN
     expectCDK(stack).to(matchTemplate({
       "Resources": {}
