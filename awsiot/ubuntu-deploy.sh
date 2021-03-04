@@ -1,6 +1,6 @@
 
-sudo yum install jq -y
-npm install -g aws-cdk
+sudo apt-get --assume-yes install jq
+npm install -g aws-cdk --force
 npm install -g typescript
 npm i
 npm run build
