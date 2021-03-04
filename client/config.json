@@ -1,8 +1,0 @@
-{
-  "keyPath": "certs/private.pem.key",
-  "certPath": "certs/device.pem.crt",
-  "caPath": "AmazonRootCA1.pem",
-  "clientId": "RemoteCameraDevice",
-  "host": "a1qlex7vqi1791-ats.iot.ap-east-1.amazonaws.com",
-  "thingName": "AwsIotChimeStack-ClientThing-1AN3BAS7A941Z"
-}

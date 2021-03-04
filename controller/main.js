@@ -1,12 +1,18 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow, screen} = require('electron')
 const path = require('path')
+const config = require('./controllerConfig.json');
 
-const AWS = require("@aws-sdk/client-chime");
-const chime = new AWS.Chime({region: "us-east-1"});
-const config = require('./config.json');
+const chimeSdk = require("@aws-sdk/client-chime");
+
+const credentials = {accessKeyId: config.accessKeyId, secretAccessKey: config.secretAccessKey};
+const chime = new chimeSdk.Chime({
+    region: "us-east-1",
+    credentials
+});
+
 const {IoTDataPlaneClient, UpdateThingShadowCommand} = require("@aws-sdk/client-iot-data-plane");
-const awsIot = new IoTDataPlaneClient({region: config.awsIotRegion});
+const awsIot = new IoTDataPlaneClient({region: config.awsIotRegion, credentials});
 
 function createWindow() {
     // Create the browser window.
@@ -60,23 +66,19 @@ ipcMain.handle('createMeeting', async () => {
         });
         meetingId = meeting.Meeting.MeetingId;
         const remoteAttendee = await joinMeeting(meetingId);
-        try {
-            const params = {
-                thingName: config.thingName,
-                payload: JSON.stringify({"state": {"desired": {"meeting": remoteAttendee}}})
-            };
-            const command = new UpdateThingShadowCommand(params);
-            await awsIot.send(command);
-            // process data.
-        } catch (error) {
-            // error handling.
-            console.error(error);
-        }
-        return meeting;
+        console.log(remoteAttendee);
+        const params = {
+            thingName: config.thingName,
+            payload: JSON.stringify({"state": {"desired": {"meeting": remoteAttendee}}})
+        };
+        const command = new UpdateThingShadowCommand(params);
+        await awsIot.send(command);
 
+        return meeting;
         // process data.
     } catch (error) {
         // error handling.
+        console.error(error);
         return error;
     }
 });

@@ -2,7 +2,7 @@
 const {app, BrowserWindow, screen} = require('electron')
 const path = require('path')
 const awsIot = require('aws-iot-device-sdk');
-const config = require('./config.json');
+const config = require('./clientConfig.json');
 
 
 let meeting;
@@ -45,16 +45,16 @@ async function joinMeeting() {
 function ConnectAwsIoT() {
     console.log(config);
     const thingShadows = awsIot.thingShadow({
-        keyPath: config.keyPath,
-        certPath: config.certPath,
-        caPath: config.caPath,
-        clientId: config.clientId,
+        keyPath: "certs/private.pem.key",
+        certPath: "certs/device.pem.crt",
+        caPath: "AmazonRootCA1.pem",
+        clientId: "RemoteCameraDevice",
         host: config.host
     });
     thingShadows.on('connect', function () {
         console.log("connected");
         thingShadows.register(config.thingName, {}, function () {
-            let initialState = {"state": {"desired": {"meetingId": ""}}};
+            let initialState = {"state": {"desired": {"meeting": ""}}};
             let clientTokenUpdate = thingShadows.update(config.thingName, initialState);
             if (clientTokenUpdate === null) {
                 console.log('update shadow failed, operation still in progress');
