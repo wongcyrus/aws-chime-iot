@@ -84,6 +84,9 @@ function handleMessage(message){
     console.log(message);
     const dataString = new TextDecoder("utf-8").decode(message.data);
     console.log(dataString);
+    ipcRenderer.invoke('sendWebRequest', dataString).then(async (data) => {
+        console.log(data);
+    })
 }
 
 async function start(data) {

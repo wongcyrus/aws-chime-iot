@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, screen} = require('electron')
+const {app, BrowserWindow, screen, ipcMain} = require('electron')
 const path = require('path')
 const awsIot = require('aws-iot-device-sdk');
 const config = require('./clientConfig.json');
@@ -33,7 +33,7 @@ async function joinMeeting() {
         console.log(meeting);
         mainWindow.webContents.send('startMeeting', {
             Meeting: meeting.Meeting,
-            Attendee:meeting.Attendee
+            Attendee: meeting.Attendee
         });
         // process data.
     } catch (error) {
@@ -105,3 +105,29 @@ app.on('window-all-closed', function () {
 app.on('before-quit', function () {
 
 })
+
+ipcMain.handle('sendWebRequest', async (event, args) => {
+    const {net} = require('electron')
+    const request = net.request({
+        method: 'GET',
+        protocol: 'http:',
+        hostname: 'localhost',
+        port: 5000,
+        path: '/'
+    });
+    request.setHeader("Content-Type", "application/json")
+
+
+    request.on('response', (response) => {
+        console.log(`STATUS: ${response.statusCode}`)
+        console.log(`HEADERS: ${JSON.stringify(response.headers)}`)
+        response.on('data', (chunk) => {
+            console.log(`BODY: ${chunk}`)
+        })
+        response.on('end', () => {
+            console.log('No more data in response.')
+        })
+    })
+    request.write(args);
+    request.end()
+});

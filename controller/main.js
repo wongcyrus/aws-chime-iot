@@ -17,21 +17,21 @@ function sendMessage(req) {
 webProxy.get('/api/*', (req, res) => {
     sendMessage(req);
     // sendMessage(req.method, req.baseUrl + req.path, req.params);
-    return res.send('Received a GET HTTP method');
+    return res.send({success: true});
 });
 webProxy.post('/api/*', (req, res) => {
     sendMessage(req);
-    return res.send('Received a POST HTTP method');
+    return res.send({success: true});
 });
 
 webProxy.put('/api/*', (req, res) => {
     sendMessage(req);
-    return res.send('Received a PUT HTTP method');
+    return res.send({success: true});
 });
 
 webProxy.delete('/api/*', (req, res) => {
     sendMessage(req);
-    return res.send('Received a DELETE HTTP method');
+    return res.send({success: true});
 });
 webProxy.listen(8080, () =>
     console.log(`Web proxy app listening on port 8080!`),
