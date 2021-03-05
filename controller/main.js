@@ -1,9 +1,41 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, screen} = require('electron')
-const path = require('path')
+const {app, BrowserWindow, screen, ipcMain} = require('electron');
 const config = require('./controllerConfig.json');
 
 const chimeSdk = require("@aws-sdk/client-chime");
+const express = require("express");
+const path = require("path");
+
+let mainWindow;
+const webProxy = express();
+
+function sendMessage(req) {
+    const {method, path, params} = req;
+    mainWindow.webContents.send('WebRequest', {method, path, params});
+}
+
+webProxy.get('/api/*', (req, res) => {
+    sendMessage(req);
+    // sendMessage(req.method, req.baseUrl + req.path, req.params);
+    return res.send('Received a GET HTTP method');
+});
+webProxy.post('/api/*', (req, res) => {
+    sendMessage(req);
+    return res.send('Received a POST HTTP method');
+});
+
+webProxy.put('/api/*', (req, res) => {
+    sendMessage(req);
+    return res.send('Received a PUT HTTP method');
+});
+
+webProxy.delete('/api/*', (req, res) => {
+    sendMessage(req);
+    return res.send('Received a DELETE HTTP method');
+});
+webProxy.listen(8080, () =>
+    console.log(`Web proxy app listening on port 8080!`),
+);
 
 const credentials = {accessKeyId: config.accessKeyId, secretAccessKey: config.secretAccessKey};
 const chime = new chimeSdk.Chime({
@@ -17,7 +49,7 @@ const awsIot = new IoTDataPlaneClient({region: config.awsIotRegion, credentials}
 function createWindow() {
     // Create the browser window.
     const {width, height} = screen.getPrimaryDisplay().workAreaSize
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: width,
         height: height,
         webPreferences: {
@@ -55,7 +87,6 @@ app.on('window-all-closed', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-const {ipcMain} = require('electron');
 let meetingId;
 ipcMain.handle('createMeeting', async () => {
     try {

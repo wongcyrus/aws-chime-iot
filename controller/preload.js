@@ -6,7 +6,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (element) element.innerText = text
   }
 
-  for (const type of ['chrome', 'node', 'electron',"amazon-chime-sdk-js"]) {
+  for (const type of ['chrome', 'node', 'electron',"amazon-chime-sdk-js","express"]) {
     replaceText(`${type}-version`, process.versions[type])
   }
 })
