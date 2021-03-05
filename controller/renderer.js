@@ -15,7 +15,9 @@ const {ipcRenderer} = require('electron');
 let meetingId;
 const createMeeting = document.getElementById("createMeeting");
 const deleteMeeting = document.getElementById("deleteMeeting");
+const sendMessage = document.getElementById("sendMessage");
 const meetingIdTextBox = document.getElementById("meetingIdTextBox");
+const controlMessageInput = document.getElementById("controlMessageTextBox");
 
 function toggleFullScreen(e) {
     e.target.classList.toggle("fullScreen");
@@ -40,6 +42,7 @@ function updateTiles(meetingSession) {
         }
     })
 }
+
 const observer = {
     // videoTileDidUpdate is called whenever a new tile is created or tileState changes.
     videoTileDidUpdate: (tileState) => {
@@ -74,8 +77,10 @@ const observer = {
         }
     }
 };
+
 async function start() {
     createMeeting.disabled = true;
+    sendMessage.disabled = false;
     deleteMeeting.disabled = false;
     ipcRenderer.invoke('createMeeting').then(async (data) => {
         console.log(data);
@@ -103,7 +108,6 @@ async function start() {
             // );
 
 
-
             meetingSession.audioVideo.addObserver(observer);
 
             meetingSession.audioVideo.startLocalVideoTile();
@@ -121,14 +125,23 @@ async function start() {
 async function stop() {
     createMeeting.disabled = false;
     deleteMeeting.disabled = true;
+    sendMessage.disabled = true;
     ipcRenderer.invoke('deleteMeeting', meetingId).then(async (data) => {
         console.log(data);
     })
 }
 
+function send() {
+    console.log(controlMessageInput.value);
+    if (window.meetingSession) {
+        window.meetingSession.audioVideo.realtimeSendDataMessage("ControlMessage", controlMessageInput.value);
+    }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
     createMeeting.addEventListener("click", start);
     deleteMeeting.addEventListener("click", stop);
+    sendMessage.addEventListener("click", send);
 });
 
 

@@ -80,6 +80,12 @@ const observer = {
     }
 };
 
+function handleMessage(message){
+    console.log(message);
+    const dataString = new TextDecoder("utf-8").decode(message.data);
+    console.log(dataString);
+}
+
 async function start(data) {
     try {
         const audioOutputElement = document.getElementById("meeting-audio");
@@ -123,6 +129,7 @@ async function start(data) {
         meetingSession.audioVideo.startLocalVideoTile();
         meetingSession.audioVideo.bindAudioElement(audioOutputElement);
         meetingSession.audioVideo.start();
+        meetingSession.audioVideo.realtimeSubscribeToReceiveDataMessage("ControlMessage",handleMessage);
     } catch (err) {
         console.error(err);
     }
