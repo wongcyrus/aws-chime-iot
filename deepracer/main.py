@@ -1,12 +1,12 @@
 import flask
 from flask import request, jsonify
 import json
-import awsdeepracer_control
+from core.web_core import Client
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
-client = awsdeepracer_control.Client(password="39282662", ip="172.0.0.1")
+client = Client(password="39282662", ip="172.0.0.1")
 
 @app.route('/', methods=['GET'])
 def api():   

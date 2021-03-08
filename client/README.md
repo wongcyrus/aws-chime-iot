@@ -45,4 +45,8 @@ Note: If you're using Linux Bash for Windows, [see this guide](https://www.howto
 [CC0 1.0 (Public Domain)](LICENSE.md)
 
 
-aws s3 sync s3://awsiotchimestack-keybucketdb247822-9i5j4w84uyif certs/ 
+## Install in AWS DeepRacer
+sudo apt-get install ./aws-chime-iot-client_XXXXXX
+
+## Reinstall in AWS DeepRacer
+sudo apt-get install --reinstall ./aws-chime-iot-client_XXXXXX
