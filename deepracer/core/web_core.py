@@ -1,13 +1,10 @@
 import sys
 import json
-from core.logger import Logger
 
 import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 from bs4 import BeautifulSoup
 import urllib3
-
-logger = Logger(logger="Deepracer-Api").getlog()
 
 
 class DeepracerVehicleApiError(Exception):
@@ -15,8 +12,9 @@ class DeepracerVehicleApiError(Exception):
 
 
 class Client:
-    def __init__(self, password, ip="192.168.1.155", name="deep_racer"):
+    def __init__(self, logger, password, ip="192.168.1.155", name="deep_racer"):
         # logger.info("Create client with ip = %s", ip)
+        self.logger = logger
         self.session = requests.Session()
         urllib3.disable_warnings()
         self.password = password
@@ -131,7 +129,7 @@ class Client:
 
     def _get(self, url, check_status_code=True):
         self._get_csrf_token()
-        logger.debug("> Get %s", url)
+        self.logger.debug("> Get %s", url)
         response = self.session.get(
             self.URL + url, headers=self.headers, verify=False)
         if check_status_code:
@@ -144,7 +142,7 @@ class Client:
 
     def _put(self, url, data, check_success=True):
         self._get_csrf_token()
-        logger.debug("> Put %s with %s", url, data)
+        self.logger.debug("> Put %s with %s", url, data)
         response = self.session.put(
             self.URL + url, json=data, headers=self.headers, verify=False
         )
