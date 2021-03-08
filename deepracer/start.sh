@@ -1,2 +1,1 @@
-.\venv\Scripts\activate
-python main.py
+sudo docker run --name deepracerapi -p 5000:5000 deepracerapi 
