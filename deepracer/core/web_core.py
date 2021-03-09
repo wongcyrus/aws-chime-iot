@@ -12,9 +12,10 @@ class DeepracerVehicleApiError(Exception):
 
 
 class Client:
-    def __init__(self, logger, password, ip="192.168.1.155", name="deep_racer"):
-        # logger.info("Create client with ip = %s", ip)
+    def __init__(self, logger, password, ip, name="deep_racer"):
+        
         self.logger = logger
+        self.logger.info("Create client with ip = %s, password = %s", ip, password)
         self.session = requests.Session()
         urllib3.disable_warnings()
         self.password = password

@@ -4,6 +4,7 @@ import json
 from core.web_core import Client
 from flask_web_log import Log
 import logging
+import os
 
 app = flask.Flask(__name__)
 app.config["LOG_TYPE"] = "STDOUT"
@@ -11,7 +12,7 @@ app.config["DEBUG"] = True
 app.logger.setLevel(logging.DEBUG)
 Log(app)
 
-client = Client(logger=app.logger, password="mBjaEwrN", ip="172.17.0.1")
+client = Client(logger=app.logger, password=os.getenv('password'), ip=os.getenv('hostIp'))
 
 @app.route('/', methods=['GET'])
 def api():   
@@ -20,14 +21,12 @@ def api():
     app.logger.info(request.json)
     try: 
         app.logger.info("Call DeepRacer")
-        path = request.json['method']
+        path = request.json['path']
         data = request.json['data']
         if request.json['method'] == 'PUT':
             client.put(path,data)
         elif request.json['method'] == 'GET':
             client.put(path,data)
-        # client.start_car()
-        # client.move(-0.46923076923076923,-0.9769230769230769,0.5)
         app.logger.info(client.get_battery_level())
         app.logger.info("Called")     
     except Exception as err:
