@@ -1,14 +1,12 @@
-# Welcome to your CDK TypeScript project!
+# awsiot project
 
-This is a blank project for TypeScript development with CDK.
+It creates all AWS IoT related resources, IAM access key pair for Controller, and generates configure files.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+In windows, run windows-deploy.bat
 
-## Useful commands
+You can use AWS Cloud9 Ubuntu deploy with ubuntu-deploy.sh.
 
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
+Finally, it will copy certifications, keys and configure files to client and controller project.
+
+
+
