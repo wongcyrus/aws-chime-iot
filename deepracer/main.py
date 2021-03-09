@@ -19,9 +19,15 @@ def api():
     app.logger.info(request.headers)
     app.logger.info(request.json)
     try: 
-        app.logger.info("Call DeepRacer")       
-        client.start_car()
-        client.move(-0.46923076923076923,-0.9769230769230769,0.5)
+        app.logger.info("Call DeepRacer")
+        path = request.json['method']
+        data = request.json['data']
+        if request.json['method'] == 'PUT':
+            client.put(path,data)
+        elif request.json['method'] == 'GET':
+            client.put(path,data)
+        # client.start_car()
+        # client.move(-0.46923076923076923,-0.9769230769230769,0.5)
         app.logger.info(client.get_battery_level())
         app.logger.info("Called")     
     except Exception as err:
