@@ -77,6 +77,15 @@ const observer = {
         }
     }
 };
+function handleMessage(message){
+    console.log("client message");
+    console.log(message);
+    const dataString = new TextDecoder("utf-8").decode(message.data);
+    console.log(dataString);
+    // ipcRenderer.invoke('sendWebRequest', dataString).then(async (data) => {
+    //     console.log(data);
+    // })
+}
 
 async function start() {
     createMeeting.disabled = true;
@@ -115,6 +124,7 @@ async function start() {
             const audioOutputElement = document.getElementById("meeting-audio");
             meetingSession.audioVideo.bindAudioElement(audioOutputElement);
             meetingSession.audioVideo.start();
+            meetingSession.audioVideo.realtimeSubscribeToReceiveDataMessage("ClientMessage",handleMessage);
         } catch (err) {
             console.error(err);
         }

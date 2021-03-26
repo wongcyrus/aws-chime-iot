@@ -138,7 +138,12 @@ async function start(data) {
     }
 }
 
-
+ipcRenderer.on("WebRequest", (event, args) => {
+    console.log("ipcRenderer", args);
+    if (window.meetingSession) {
+        window.meetingSession.audioVideo.realtimeSendDataMessage("ClientMessage", JSON.stringify(args));
+    }
+})
 
 
 

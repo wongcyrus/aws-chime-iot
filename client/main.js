@@ -1,12 +1,46 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow, screen, ipcMain} = require('electron')
-const path = require('path')
+const path = require('path');
+const express = require("express");
+const bodyParser = require('body-parser')
 const awsIot = require('aws-iot-device-sdk');
 const config = require('./clientConfig.json');
 
 
 let meeting;
+
 let mainWindow;
+const webProxy = express();
+webProxy.use(bodyParser.json())
+
+function sendMessage(req, res) {
+    //console.log(req)
+    const {method, path, body} = req;
+    console.log({method, path, data: body});
+    mainWindow.webContents.send('WebRequest', {method, path, data: body});
+}
+
+webProxy.get('/api/*', (req, res) => {
+    sendMessage(req, res);
+    return res.send({success: true});
+});
+webProxy.post('/api/*', (req, res) => {
+    sendMessage(req, res);
+    return res.send({success: true});
+});
+
+webProxy.put('/api/*', (req, res) => {
+    sendMessage(req, res);
+    return res.send({success: true});
+});
+
+webProxy.delete('/api/*', (req, res) => {
+    sendMessage(req, res);
+    return res.send({success: true});
+});
+webProxy.listen(8081, () =>
+    console.log(`Web proxy app listening on port 8080!`),
+);
 
 function createWindow() {
     // Create the browser window.
