@@ -13,7 +13,7 @@ app.config["DEBUG"] = True
 app.logger.setLevel(logging.DEBUG)
 Log(app)
 
-client = Client(logger=app.logger, password="adsd", ip="12.7.8.25")
+client = Client(logger=app.logger, password=os.getenv('password'), ip=os.getenv('hostIp'))
 
 def put(url, data):
     session = requests.Session()
